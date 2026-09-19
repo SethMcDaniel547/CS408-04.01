@@ -1,27 +1,21 @@
 # 1. Clone the Repository
 git clone https://github.com/SethMcDaniel547/CS408-04.01.git
 
-# 2. Update Root Folder
-The root folder needs to be named HelloWorld
-
-# 3. Install Go Dependencies
+# 2. Install Go Dependencies
 go mod tidy
 
-# 4. Install Node.js Dependencies
+# 3. Install Node.js Dependencies
 npm install
 
-# 5. Set Up Environment Variables
-Create a .env file in the root directory and
-add your canvas api token with
+# 4. Set Up Environment Variables
+update the .env file in the root directory by removing the .example
+portion of .env.example and add your canvas api token here
 CANVAS_API_TOKEN=
 
-# 6. Configure Tailwind CSS (if needed)
-npm run build
-
-# 7.  Generate templ files
+# 5.  Generate templ files
 templ generate
 
-# 8. Run the Application
+# 6. Run the Application
 ## Run in development mode
 go run cmd/main.go
 
