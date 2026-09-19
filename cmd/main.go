@@ -1,15 +1,18 @@
 package main
 
 import (
-	"HelloWorld/views" // Adjust this to match your go.mod module name
 	"context"
-	"net/http"
+	"log"
+	"os"
+
+	"HelloWorld/internal/handlers"
 
 	"github.com/a-h/templ"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
 
-// Simple middleware/helper wrapper to render Templ components over Echo Context
+// RenderTempl is your helper wrapper to render Templ components over Echo Context cleanly
 func RenderTempl(c echo.Context, status int, cmp templ.Component) error {
 	c.Response().Writer.WriteHeader(status)
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
@@ -17,20 +20,28 @@ func RenderTempl(c echo.Context, status int, cmp templ.Component) error {
 }
 
 func main() {
+	// Load environment variables from .env file if present
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found, relying on system environment variables")
+	}
+
 	e := echo.New()
 
 	// Serve your compiled Tailwind file statically
 	e.Static("/public", "public")
 
-	// Page route
-	e.GET("/", func(c echo.Context) error {
-		return RenderTempl(c, http.StatusOK, views.Home())
-	})
+	// Page routes (wiring up to your handlers package)
+	e.GET("/", handlers.HomeHandler)
 
-	// HTMX API fragment route
-	e.GET("/api/hello", func(c echo.Context) error {
-		return RenderTempl(c, http.StatusOK, views.HelloFragment())
-	})
+	e.GET("/courses/:id/assignments", handlers.AssignmentsHandler)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.POST("/submit-assignment", handlers.SubmitAssignmentHandler)
+	// Start server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server starting on http://localhost:%s", port)
+	e.Logger.Fatal(e.Start(":" + port))
 }
