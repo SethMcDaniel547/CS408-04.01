@@ -1,3 +1,5 @@
+It submitted itself!
+
 # 1. Clone the Repository
 git clone https://github.com/SethMcDaniel547/CS408-04.01.git
 
